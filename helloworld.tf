@@ -22,9 +22,26 @@ resource "aws_vpc" "vpc_brq" {
 
 resource "aws_internet_gateway" "gw_brq" {
   vpc_id = aws_vpc.vpc_brq.id
-
   tags = {
     Name = "Deyverson"
+  }
+}
+
+resource "aws_route_table" "rotas_brq" {
+  vpc_id = aws_vpc.vpc_brq.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw_brq.id
+  }
+
+  route {
+    ipv6_cidr_block        = "::/0"
+    gateway_id = aws_internet_gateway.gw_brq.id
+  }
+
+  tags = {
+    Name = "GustavoGomez"
   }
 }
 
