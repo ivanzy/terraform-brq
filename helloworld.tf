@@ -9,8 +9,7 @@ terraform {
 
 provider "aws" {
   region     = "us-east-1"
-  access_key = "AKIA4BJ3JJCBJEGPDL67"
-  secret_key = "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"
+
 }
 
 resource "aws_vpc" "vpc_brq" {
@@ -118,11 +117,24 @@ resource "aws_eip" "ip_publico" {
 }
 
 
-# resource "aws_instance" "ola-mundo" {
-#     ami = "ami-04505e74c0741db8d"
-#     instance_type = "t2.micro"
+resource "aws_instance" "app_web" {
+  ami               = "ami-04505e74c0741db8d"
+  instance_type     = "t2.micro"
+  availability_zone = "us-east-1a"
+  network_interface {
+    device_index         = 0
+    network_interface_id = aws_network_interface.interface_rede.id
+  }
+  user_data = <<-EOF
+               #! /bin/bash
+               sudo apt-get update -y
+               sudo apt-get install -y apache2
+               sudo systemctl start apache2
+               sudo systemctl enable apache2
+               sudo bash -c 'echo "<h1>PALMEIRAS TRI DA AMERICA</h1>"  > /var/www/html/index.html'
+             EOF
+  tags = {
+    Name = "RaphaelVeiga"
+  }
+}
 
-#     tags = {
-#         Name = "Robson"
-#     }
-# }
